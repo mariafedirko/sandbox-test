@@ -8,8 +8,8 @@ targets:
 
 resources:
   pipelines:
-    lakeflow_dqx_integration_git_example:
-      name: lakeflow_dqx_integration_git_example
+    lakeflow_dqx_integration_example_bundle_deployed:
+      name: lakeflow_dqx_integration_example_bundle_deployed
       target: fed_silver
       photon: true
       serverless: true
