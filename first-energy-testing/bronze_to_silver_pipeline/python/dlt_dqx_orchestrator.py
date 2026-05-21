@@ -16,7 +16,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__)) # comment if running in
 
 # Step up one level out of 'python/' to get to the root pipeline folder
 PIPELINE_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
-#PIPELINE_ROOT = "/Workspace/Users/maria.fedirko@lovelytics.com/sandbox-test/(Clone) first-energy-testing/bronze_to_silver_pipeline"
+#PIPELINE_ROOT = "/Workspace/Users/maria.fedirko@lovelytics.com/sandbox-test/first-energy-testing/bronze_to_silver_pipeline"
 
 CONTRACT_PATH = os.path.join(PIPELINE_ROOT, "contracts", "silver_contracts.yml")
 
