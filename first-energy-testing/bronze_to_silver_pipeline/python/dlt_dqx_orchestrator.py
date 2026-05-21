@@ -11,17 +11,24 @@ from databricks.sdk import WorkspaceClient
 
 ws = WorkspaceClient()
 
-# BUNDLE COMPATIBLE: Dynamically find where this file is executing from
-# __file__ points to: .../bronze_to_silver_pipeline/python/dlt_dqx_orchestrator.py
-CURRENT_DIR = os.path.dirname(
-    os.path.abspath(__file__)
-)  # comment if running in workspace folder not git
+# Grab the workspace path of this running notebook
+notebook_path = (
+    dbutils.entry_point.getDbutils().notebook().getContext().notebookPath().get()
+)
 
-# Step up one level out of 'python/' to get to the root pipeline folder
-PIPELINE_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
-# PIPELINE_ROOT = "/Workspace/Users/maria.fedirko@lovelytics.com/sandbox-test/first-energy-testing/bronze_to_silver_pipeline"
+# Go up two levels (out of 'python', then out of 'bronze_to_silver_pipeline') to reach the project root
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(notebook_path)))
 
-CONTRACT_PATH = os.path.join(PIPELINE_ROOT, "contracts", "silver_contracts.yml")
+# Attach the mandatory physical filesystem prefix
+BASE_DIR = os.path.join("/Workspace", project_root.lstrip("/"))
+
+# Target your asset files cleanly (FIXED: Unified to consistent UPPERCASE constants)
+CONTRACT_PATH = os.path.join(
+    BASE_DIR, "bronze_to_silver_pipeline", "contracts", "silver_contracts.yml"
+)
+SQL_PATH = os.path.join(
+    BASE_DIR, "bronze_to_silver_pipeline", "sql", "silver_clean_users.sql"
+)
 
 # Aggregate functions are incompatible with Lakeflow's append state mechanisms
 _AGGREGATE_FUNCTIONS = {"is_aggr_not_less_than", "is_aggr_not_greater_than"}
@@ -55,9 +62,6 @@ dq_engine = DQEngine(ws)
 # ─────────────────────────────────────────────────────────────────────
 # Compute the split ONCE — shared between the two output tables
 # ─────────────────────────────────────────────────────────────────────
-
-# Target your SQL file location explicitly from the root folder
-SQL_PATH = os.path.join(PIPELINE_ROOT, "sql", "silver_clean_users.sql")
 
 print(f"[DQX] Reading clean SQL transformation asset from: {SQL_PATH}")
 with open(SQL_PATH, "r") as f:
