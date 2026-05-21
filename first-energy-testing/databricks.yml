@@ -15,9 +15,8 @@ resources:
       serverless: true
       channel: CURRENT
       libraries:
-        - notebook:
+        - notebook:        
             path: ./bronze_to_silver_pipeline/python/dlt_dqx_orchestrator.py
-      settings:
-        environment:
-          dependencies:
-            - -r requirements.txt
+      environment:       
+        dependencies:
+          - -r requirements.txt
