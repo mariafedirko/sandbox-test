@@ -17,7 +17,7 @@ resources:
       libraries:
         - notebook:
             path: ./bronze_to_silver_pipeline/python/dlt_dqx_orchestrator.py
-      setting:
+      settings:
         environment:
           dependencies:
             - -r requirements.txt
