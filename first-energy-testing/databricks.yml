@@ -10,6 +10,7 @@ resources:
   pipelines:
     lakeflow_dqx_integration_example_bundle_deployed:
       name: lakeflow_dqx_integration_example_bundle_deployed
+      catalog: sandbox
       target: fed_silver
       photon: true
       serverless: true
