@@ -1,0 +1,65 @@
+kind: DataContract
+apiVersion: v3.0.2
+id: urn:datacontract:sandbox:firstenergy:users
+name: First Energy Users
+version: 1.0.0
+status: active
+domain: sandbox
+dataProduct: users_cleaned
+
+# FIX: description is restructured into a valid model dictionary block
+description:
+  purpose: User profile records processed from Bronze to Silver layer with dynamic DQX validations.
+  text: Source mapping tracks input table sandbox.fed_bronze.users
+
+schema:
+  - name: users_cleaned
+    physicalType: table
+    description: Validated user data profiles ready for downstream ingestion
+
+    # ────────────────────────────────────────────────────────────
+    # Column-level constraints → auto-generated predefined rules
+    # ────────────────────────────────────────────────────────────
+    properties:
+      - name: user_id
+        logicalType: string
+        physicalType: string
+        required: true
+        description: Unique identifier for the user account
+
+      - name: email
+        logicalType: string
+        physicalType: string
+        required: true
+        description: Primary email registration string for the user
+        quality:
+          - type: custom
+            engine: dqx
+            description: Email must match a standard wildcard layout containing an '@' symbol
+            implementation:
+              name: valid_email_format
+              criticality: error
+              check:
+                function: sql_expression
+                arguments:
+                  expression: "email LIKE '%@%'"
+
+      - name: age
+        logicalType: integer
+        physicalType: int
+        required: false
+        description: Age of the account holder bounded by standard physical limits
+        logicalTypeOptions:
+          minimum: 0
+          maximum: 125
+        quality:
+          - type: custom
+            engine: dqx
+            description: Account holder age must be between 0 and 125 years old
+            implementation:
+              name: reasonable_age_range
+              criticality: error
+              check:
+                function: sql_expression
+                arguments:
+                  expression: "age >= 0 AND age <= 125"

@@ -1,0 +1,23 @@
+bundle:
+  name: first-energy-lakeflow-dqx
+
+targets:
+  dev:
+    workspace:
+      host: https://lovelytics-internal.cloud.databricks.com
+
+resources:
+  pipelines:
+    lakeflow_dqx_integration_git_example:
+      name: lakeflow_dqx_integration_git_example
+      target: fed_silver
+      photon: true
+      serverless: true
+      channel: CURRENT
+      libraries:
+        - notebook:
+            path: ./bronze_to_silver_pipeline/python/dlt_dqx_orchestrator.py
+      setting:
+        environment:
+          dependencies:
+            - -r requirements.txt
