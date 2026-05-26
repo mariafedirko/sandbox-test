@@ -30,8 +30,8 @@ SQL_PATH = os.path.join(
     BASE_DIR, "bronze_to_silver_pipeline", "sql", "silver_clean_users.sql"
 )
 
-# Aggregate functions are incompatible with Lakeflow's append state mechanisms
-_AGGREGATE_FUNCTIONS = {"is_aggr_not_less_than", "is_aggr_not_greater_than"}
+# # Aggregate functions are incompatible with Lakeflow's append state mechanisms
+# _AGGREGATE_FUNCTIONS = {"is_aggr_not_less_than", "is_aggr_not_greater_than"}
 
 # Initialize the generative metadata contractor
 generator = DQGenerator(workspace_client=ws, spark=spark)
@@ -48,8 +48,8 @@ all_rules = generator.generate_rules_from_contract(
 # Filter out incompatible aggregate constraints
 rules = [
     r
-    for r in all_rules
-    if r.get("check", {}).get("function") not in _AGGREGATE_FUNCTIONS
+    # for r in all_rules
+    # if r.get("check", {}).get("function") not in _AGGREGATE_FUNCTIONS
 ]
 
 print(f"[DQX] Successfully parsed {len(rules)} rules out of the contract layout:")
