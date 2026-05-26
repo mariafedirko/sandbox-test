@@ -45,12 +45,13 @@ all_rules = generator.generate_rules_from_contract(
     default_criticality="error",
 )
 
-# Filter out incompatible aggregate constraints
-rules = [
-    r
-    # for r in all_rules
-    # if r.get("check", {}).get("function") not in _AGGREGATE_FUNCTIONS
-]
+# # Filter out incompatible aggregate constraints
+# rules = [
+#     r
+#     for r in all_rules
+#     if r.get("check", {}).get("function") not in _AGGREGATE_FUNCTIONS
+# ]
+rules = all_rules
 
 print(f"[DQX] Successfully parsed {len(rules)} rules out of the contract layout:")
 for r in rules:
