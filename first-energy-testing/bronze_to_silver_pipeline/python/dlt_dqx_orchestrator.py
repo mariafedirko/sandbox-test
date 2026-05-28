@@ -30,9 +30,6 @@ SQL_PATH = os.path.join(
     BASE_DIR, "bronze_to_silver_pipeline", "sql", "silver_clean_users.sql"
 )
 
-# # Aggregate functions are incompatible with Lakeflow's append state mechanisms
-# _AGGREGATE_FUNCTIONS = {"is_aggr_not_less_than", "is_aggr_not_greater_than"}
-
 # Initialize the generative metadata contractor
 generator = DQGenerator(workspace_client=ws, spark=spark)
 
@@ -45,16 +42,8 @@ all_rules = generator.generate_rules_from_contract(
     default_criticality="error",
 )
 
-# # Filter out incompatible aggregate constraints
-# rules = [
-#     r
-#     for r in all_rules
-#     if r.get("check", {}).get("function") not in _AGGREGATE_FUNCTIONS
-# ]
-rules = all_rules
-
-print(f"[DQX] Successfully parsed {len(rules)} rules out of the contract layout:")
-for r in rules:
+print(f"[DQX] Successfully parsed {len(all_rules)} rules out of the contract layout:")
+for r in all_rules:
     print(f"  - {r['name']} ({r['criticality']})")
 
 dq_engine = DQEngine(ws)
@@ -76,7 +65,7 @@ def _split_staging():
     """
     transformed_df = spark.sql(SILVER_SQL)
     good_df, bad_df = dq_engine.apply_checks_by_metadata_and_split(
-        transformed_df, rules
+        transformed_df, all_rules
     )
     return good_df, bad_df
 
