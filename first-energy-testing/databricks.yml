@@ -1,10 +1,17 @@
 bundle:
   name: first-energy-lakeflow-dqx
 
+variables:
+  sql_warehouse_id:
+    description: SQL warehouse used to run the DQX dashboard
+    default: "39397095a88a6b1b"   # general-sql-warehouse
+
 targets:
   dev:
     workspace:
       host: https://lovelytics-internal.cloud.databricks.com
+    variables:
+      sql_warehouse_id: "39397095a88a6b1b"
 
 resources:
   pipelines:
@@ -16,8 +23,14 @@ resources:
       serverless: true
       channel: CURRENT
       libraries:
-        - notebook:        
+        - notebook:
             path: ./bronze_to_silver_pipeline/python/dlt_dqx_orchestrator.py
-      environment:       
+      environment:
         dependencies:
           - -r requirements.txt
+
+  dashboards:
+    dqx_dashboard:
+      display_name: "Demo DQX Dashboard FE Testing"
+      file_path: ./dashboards/DQX_Dashboard.lvdash.json
+      warehouse_id: ${var.sql_warehouse_id}
